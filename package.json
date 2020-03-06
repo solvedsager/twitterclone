@@ -1,5 +1,5 @@
 {
-  "name": "twitterbot-v5",
+  "name": "twitterbot-v6",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "config": "^3.2.5",
+    "config": "^3.3.0",
     "express": "^4.17.1",
     "moment": "^2.24.0",
     "twit": "^2.2.11"

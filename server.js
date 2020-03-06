@@ -1,5 +1,4 @@
 const express = require('express');
-// const connectDB = require('./config/db');
 const app = express();
 const path = require('path');
 var Twit = require('twit');
@@ -7,12 +6,6 @@ var config = require('./config');
 var T = new Twit(config);
 var bodyParser = require('body-parser');
 
-//conn database func
-// connectDB();
-
-
-//init midwared
-// app.use(express.json({ extended: false}));
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -34,29 +27,42 @@ app.use((req, res, next) => {
   next();
 });
 
-var paramsA = {
-  // id: 1387740758,
-  // count: 10
-  screen_name: '@realDonaldTrump'
+let twitti;
+app.get('/users/:userId', function (req, res) {
 
-}
-let twitData;
-const twitterData = T.get('users/show', paramsA, function(err, data, response) {
-  // console.log(data)
-  twitData = data;
+    var parameters = {
+        screen_name: req.params.userId 
+      }
+    let x;
+
+    T.get('users/show', parameters, function(err, data, response) {
+        twitti = data;
+     })
+     
+     setTimeout(function(){ 
+        res.send(twitti); }, 3000);
 });
 
-var paramsB = {
-  // id: 1387740758,
-  screen_name: '@realDonaldTrump',
-  count: 10
-}
+// new custom route
 
-let twitDataC;
-T.get('statuses/user_timeline', paramsB, function(err, data, response) {
-  twitDataC = data;
-  // console.log(data[0]);
+let twitus;
+app.get('/statuses/:userId', function (req, res) {
+
+    var parameters = {
+        screen_name: req.params.userId,
+        count: 10
+      }
+    let x;
+
+    T.get('statuses/user_timeline', parameters, function(err, data, response) {
+        twittus = data;
+     })
+     
+     setTimeout(function(){ 
+        res.send(twittus); }, 3000);
 });
+
+// old crusty
 
 var paramsD = {
   id: 1387740758,
@@ -69,10 +75,9 @@ T.get('search/tweets', { q: 'trump since:2011-07-11', count: 10 }, function(err,
   twitDataD = data;
 })
 
-var paramsC = {
-  status: 'hello'
-}
-
+app.get("/api/twitD", function(req, res, next) {
+  res.send(twitDataD);
+})
 
 // final endpoint
 
@@ -87,96 +92,10 @@ T.get('favorites/list', paramsB, function(err, data, response) {
   // console.log(data[0]);
 });
 
-
-function postStatus(params){
-  console.log(params)
-  var paramsC = {
-    status: params
-  }
-  T.post('statuses/update', paramsC , function(err, data, response) {
-    // console.log(data);
-    console.log(paramsC);
-  });
-}
-
-
-
-
-
-
-//define routes
-app.get("/api/twitA", function(req, res, next) {
-  res.send(twitData);
-})
-
-app.get("/api/twitC", function(req, res, next) {
-  res.send(twitDataC);
-})
-
-app.get("/api/twitD", function(req, res, next) {
-  res.send(twitDataD);
-})
-
 app.get("/api/twitE", function(req, res, next) {
   res.send(twitDataE);
 })
 
-let twitti;
-app.get('/users/:userId', function (req, res) {
-    // console.log('heyheyhey');
-    // var params = {
-    //     // id: 1387740758,
-    //     // count: 10
-    //     screen_name: '@realDonaldTrump'
-      
-    //   }
-    var parameters = {
-        // id: 1387740758,
-        // count: 10
-        screen_name: req.params.userId 
-      }
-    // var x = callStuff(req.params);
-    let x;
-
-    T.get('users/show', parameters, function(err, data, response) {
-        // console.log(data);
-        // console.log('hmm');
-        twitti = data;
-     })
-     
-     setTimeout(function(){ 
-        res.send(twitti); }, 3000);
-     });
-
-app.get('/users/:userId/likes', function (req, res) {
-  res.send('heller bud');
-})
-
-function callStuff(params) {
-    var parameters = {
-            // id: 1387740758,
-            // count: 10
-            screen_name: params.userId 
-          }
-    console.log(parameters.screen_name);
-    let final;
-    T.get('users/show', parameters, function(err, data, response) {
-        // console.log(data)
-        const enter = data
-        return enter;
-     });
-     console.log(final);
-}
-
-app.post("/api/post", function(req, res, next) {
-  console.log(req.body)
-  console.log(req.body.status);
-  // console.log(req);
-
-//   postStatus(req.body.status);
-  console.log('congrats');
-  res.send('success');
-})
 
 const PORT = process.env.PORT || 5000;
 
